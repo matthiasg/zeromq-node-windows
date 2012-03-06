@@ -5,12 +5,15 @@
   "version": "0.0.1",
   "homepage": "https://github.com/matthiasg",
   "main": "./index.js",
-  "bin": "./bin/ariel.js",
+  "files":[
+    "compiled",
+    "index.js"
+  ],
   "engines": {
     "node": ">= 0.6"
   },
   "dependencies": {
-      "bindings": "> 0.3.0"
+      "bindings": "0.3.0"
   },
   "devDependencies": {
       "should": ">= 0.5.1",
