@@ -71,7 +71,7 @@ namespace zmq {
     public:
       static void Initialize(v8::Handle<v8::Object> target);
       virtual ~Socket();
-      void CallbackIfReady();
+      bool CallbackIfReady();
 
     private:
       static Handle<Value> New(const Arguments &args);
@@ -111,8 +111,9 @@ namespace zmq {
       uint8_t state_;
 
       bool IsReady();
-      uv_check_t *check_handle_;
-      static void UV_CheckFDState(uv_check_t* handle, int status);
+      uv_timer_t  *check_timer_handle_;
+      uv_loop_t *check_loop;
+      static void UV_CheckFDState(uv_timer_t* handle, int status);
   };
 
   Persistent<String> callback_symbol;
@@ -268,14 +269,14 @@ namespace zmq {
     return zmq_poll(items, 1, 0);
   }
 
-  void
+  bool
   Socket::CallbackIfReady() {
     if (this->IsReady()) {
       HandleScope scope;
 
       Local<Value> callback_v = this->handle_->Get(callback_symbol);
       if (!callback_v->IsFunction()) {
-        return;
+        return false;
       }
 
       TryCatch try_catch;
@@ -285,15 +286,20 @@ namespace zmq {
       if (try_catch.HasCaught()) {
         FatalException(try_catch);
       }
+
+      return true;
     }
+    else
+      return false;
   }
 
   void
-  Socket::UV_CheckFDState(uv_check_t* handle, int status) {
+  Socket::UV_CheckFDState(uv_timer_t* timer, int status) {
     assert(status == 0);
 
-    Socket* s = static_cast<Socket*>(handle->data);
-    s->CallbackIfReady();
+    Socket* s = static_cast<Socket*>(timer->data);
+    
+    while(s->CallbackIfReady());
   }
 
   Socket::Socket(Context *context, int type) : ObjectWrap() {
@@ -301,11 +307,15 @@ namespace zmq {
     socket_ = zmq_socket(context->context_, type);
     state_ = STATE_READY;
 
-    check_handle_ = new uv_check_t;
+    check_loop = uv_default_loop();
+    check_timer_handle_ = new uv_timer_t;
 
-    check_handle_->data = this;
-    uv_check_init(uv_default_loop(), check_handle_);
-    uv_check_start(check_handle_, Socket::UV_CheckFDState);
+    uv_timer_init( check_loop, check_timer_handle_ );
+    uv_timer_start( check_timer_handle_, Socket::UV_CheckFDState, 0, 1);
+
+    check_timer_handle_->data = this;
+    //uv_check_init(uv_default_loop(), check_handle_);
+    //uv_check_start(check_handle_, Socket::UV_CheckFDState);
   }
 
   Socket *
@@ -784,9 +794,12 @@ namespace zmq {
       context_.Dispose();
       context_.Clear();
 
-      uv_check_stop(check_handle_);
-      delete check_handle_;
-      uv_unref(uv_default_loop());
+      //uv_check_stop(check_handle_);
+      uv_timer_stop(check_timer_handle_);
+      uv_unref(check_loop);
+
+      //delete check_handle_;
+      //uv_unref(uv_default_loop());
     }
   }
 
