@@ -1,3 +1,5 @@
+.node-gyp
+*.cache
 embeddedRefs
 build
 AutoTest.Net
