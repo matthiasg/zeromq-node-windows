@@ -1,5 +1,5 @@
 
-var zmq = require('zmq-windows')
+var zmq = require('..')
   , should = require('should');
 
 var pull = zmq.socket('pull')
