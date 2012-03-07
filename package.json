@@ -1,0 +1,23 @@
+{
+  "author": "Matthias Goetzke <m.goetzke@curasystems.de> (https://twitter.com/mgoetzke)",
+  "name": "zmq-windows",
+  "description": "test of zeromq bindings for windows",
+  "version": "0.0.1",
+  "homepage": "https://github.com/matthiasg",
+  "main": "./index.js",
+  "files":[
+    "compiled",
+    "index.js"
+  ],
+  "engines": {
+    "node": ">= 0.6"
+  },
+  "dependencies": {
+      "bindings": "0.3.0"
+  },
+  "devDependencies": {
+      "should": ">= 0.5.1",
+      "ariel": "*"
+  },
+  "optionalDependencies": {}
+}
