@@ -7,7 +7,7 @@ var pull = zmq.socket('pull')
 
 var start;
 var end;
-var messageCount=1000;
+var messageCount=100000;
 var messagesReceived=0;
 
 pull.on('message', function(msg){
