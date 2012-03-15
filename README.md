@@ -17,17 +17,11 @@ The api is identical to the [zeromq.node][jtzn] driver.
 
 Compilation
 -----------
-If you want to compile the project, check it out and install node-gyp 
+If you want to compile the project, check it out and install node-gyp.
+Note: use node-gyp 0.3.5
 
   npm install -g node-gyp 
   node-gyp configure 
-
-The build folder should contain the vcproj then which could be built with node-gyp build sadly the generated vcproj seems to have an error and uses $(Configuration) instead of $(ConfigurationName) which, at least on my machines is not defined. Thus i change the vcproj file after running configure and replace *$(Configuration)* with *$(ConfigurationName)*. I created a [ticket][gypt] for this.
-
-  [gypt]: https://github.com/TooTallNate/node-gyp/issues/35
-
-After patching you can run:
-
   node-gyp build
 
 which will build a release file and place it under build\Release.
@@ -38,8 +32,6 @@ If you want to require the package you have to copy the zeromq.node file from bu
   
 Changes
 =======
-
-Apart from fixing the vcproj i made a few changes to:
 
 bindings.cc
 ------------
@@ -52,7 +44,7 @@ bindings.cc
 
   * I changed the binding name from 'binding' to 'zeromq'. In the bindings.cc.
 
-zeromq.gyp
-----------
+bindings.gyp
+------------
 
-A small windows only gyp file.
+A small, windows only gyp file.
