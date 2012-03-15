@@ -20,9 +20,9 @@ Compilation
 If you want to compile the project, check it out and install node-gyp.
 Note: use node-gyp 0.3.5
 
-  npm install -g node-gyp 
-  node-gyp configure 
-  node-gyp build
+  * npm install -g node-gyp 
+  * node-gyp configure 
+  * node-gyp build
 
 which will build a release file and place it under build\Release.
 This is the file used by default by the tests and example.
