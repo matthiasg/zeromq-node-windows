@@ -796,11 +796,13 @@ namespace zmq {
 
       //uv_check_stop(check_handle_);
       uv_timer_stop(check_timer_handle_);
-      uv_unref(check_loop);
+      
+	  //https://github.com/developmentseed/node-sqlite3/pull/76
+	  //uv_unref(check_loop);
 
       //delete check_handle_;
       //uv_unref(uv_default_loop());
-    }
+	}
   }
 
   Handle<Value>
